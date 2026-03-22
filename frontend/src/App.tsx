@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
 import LandingPage from './pages/LandingPage/LandingPage';
+import DashboardPage from './pages/DashboardPage';
 
 // 1. Create a Layout component to wrap pages that NEED a header and footer
 const MainLayout = () => {
@@ -36,6 +37,7 @@ const App: React.FC = () => {
         {/* Routes WITH Header & Footer wrapped inside */}
         {/* ========================================== */}
         <Route element={<MainLayout />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/metrics" element={<div className="text-center mt-20">Metrics Page Coming Soon</div>} />
           <Route path="/lounge" element={<div className="text-center mt-20">Lounge Coming Soon</div>} />
           <Route path="/tindrock" element={<div className="text-center mt-20">Tindrock Coming Soon</div>} />
