@@ -6,6 +6,7 @@ import LandingPage from './pages/LandingPage/LandingPage';
 import DashboardPage from './pages/DashboardPage';
 import LoungePage from './pages/LoungePage';
 import SeeThroughEyes from './components/eyes/Eyes';
+import SOLIDebuggerPage from './pages/SOLIDebuggerPage';
 import Metrics from './components/metrics/Metrics';
 import TindrockPage from './pages/TindrockPage';
 
@@ -43,7 +44,8 @@ const App: React.FC = () => {
           <Route path="/metrics" element={<Metrics />} />
           <Route path="/lounge" element={<LoungePage />} />
           <Route path="/eyes" element={<SeeThroughEyes />} />
-          <Route path="/tindrock" element={<div className="text-center mt-20 text-2xl font-bold text-[#0B132B]">Tindrock Coming Soon</div>} />
+          <Route path="/solid-debugger" element={<SOLIDebuggerPage />} />
+          <Route path="/tindrock" element={<TindrockPage />} />
         </Route>
 
         {/* Catch-all route at the very end to bounce invalid URLs to landing */}
