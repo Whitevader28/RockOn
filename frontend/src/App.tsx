@@ -43,7 +43,7 @@ const App: React.FC = () => {
           <Route path="/metrics" element={<Metrics />} />
           <Route path="/lounge" element={<LoungePage />} />
           <Route path="/eyes" element={<SeeThroughEyes />} />
-          <Route path="/tindrock" element={<div className="text-center mt-20 text-2xl font-bold text-[#0B132B]">Tindrock Coming Soon</div>} />
+          <Route path="/tindrock" element={<TindrockPage />} />
         </Route>
 
         {/* Catch-all route at the very end to bounce invalid URLs to landing */}

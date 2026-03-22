@@ -7,13 +7,14 @@ export interface PostProps {
   title: string;
   content: string;
   tag: string;
-  createdAt: Date; // Coming straight from DB
+  createdAt: string;
   upvotes: number;
   comments: CommentProps[];
 }
 
 // Helper to format the date for the post
-const formatTimeAgo = (date: Date) => {
+const formatTimeAgo = (dateIsoString: string) => {
+  const date = new Date(dateIsoString);
   const diffInHours = Math.floor((new Date().getTime() - date.getTime()) / (1000 * 60 * 60));
   if (diffInHours < 1) return 'JUST NOW';
   if (diffInHours < 24) return `${diffInHours}H AGO`;
@@ -61,6 +62,12 @@ const PostCard: React.FC<{ post: PostProps }> = ({ post }) => {
         >
           <MessageSquare className="w-4 h-4" />
           <span>{commentCount} COMMENTS</span>
+        </button>
+        <button
+          onClick={() => setShowComments(true)}
+          className="text-[10px] uppercase tracking-widest text-[#00C48C] hover:text-[#0B132B] transition-colors"
+        >
+          Create Comment
         </button>
         <button 
           onClick={handleUpvote}
