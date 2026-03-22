@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { BarChart2, User } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -37,9 +37,9 @@ const Header: React.FC = () => {
       </nav>
 
       <div className="flex items-center space-x-6 text-[#5B6B8A]">
-        <button className="hover:text-[#0B132B] transition-colors" aria-label="View Metrics">
+        <Link to="/metrics" className="hover:text-[#0B132B] transition-colors" aria-label="View Metrics">
           <BarChart2 className="w-5 h-5" strokeWidth={1.5} />
-        </button>
+        </Link>
         <button className="hover:text-[#0B132B] transition-colors" aria-label="User Profile">
           <User className="w-5 h-5" strokeWidth={1.5} />
         </button>
