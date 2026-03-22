@@ -6,6 +6,7 @@ import LandingPage from './pages/LandingPage/LandingPage';
 import DashboardPage from './pages/DashboardPage';
 import LoungePage from './pages/LoungePage';
 import SeeThroughEyes from './components/eyes/Eyes';
+import SOLIDebuggerPage from './pages/SOLIDebuggerPage';
 import Metrics from './components/metrics/Metrics';
 import TindrockPage from './pages/TindrockPage';
 
@@ -43,6 +44,7 @@ const App: React.FC = () => {
           <Route path="/metrics" element={<Metrics />} />
           <Route path="/lounge" element={<LoungePage />} />
           <Route path="/eyes" element={<SeeThroughEyes />} />
+          <Route path="/solid-debugger" element={<SOLIDebuggerPage />} />
           <Route path="/tindrock" element={<TindrockPage />} />
         </Route>
 
