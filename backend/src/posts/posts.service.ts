@@ -10,6 +10,8 @@ export class PostsService {
   async createPost(rockId: string, createPostDto: CreatePostDto) {
     const post = await this.prisma.post.create({
       data: {
+		title: createPostDto.title,
+		tag: createPostDto.tag,
         content: createPostDto.content,
         imgUrl: createPostDto.imgUrl,
         rockId,

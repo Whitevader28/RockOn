@@ -13,4 +13,16 @@ export class CreatePostDto {
     example: 'https://example.com/rock-selfie.png',
   })
   imgUrl?: string;
+
+  @ApiProperty({
+	description: 'Title of the post',
+	example: 'Feeling Shiny',
+  })
+  title: string;
+
+  @ApiProperty({
+	description: 'Tag for the post',
+	example: 'polished',
+  })
+  tag: string;
 }

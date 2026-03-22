@@ -1,6 +1,15 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Pedigree, Trait, Vibe } from '@prisma/client';
 import { randomUUID } from 'crypto';
+import { v2 as cloudinary } from 'cloudinary';
+import sharp from 'sharp';
+import streamifier from 'streamifier';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ValidateTokenDto } from './dto/validate-token.dto';
 import { PrismaService } from '../prisma.service';
@@ -14,6 +23,51 @@ export class AuthService {
 
   private pickRandom<T>(items: T[]): T {
     return items[Math.floor(Math.random() * items.length)];
+  }
+
+  private configureCloudinary() {
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+    if (!cloudName || !apiKey || !apiSecret) {
+      throw new InternalServerErrorException(
+        'Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET.',
+      );
+    }
+
+    cloudinary.config({
+      cloud_name: cloudName,
+      api_key: apiKey,
+      api_secret: apiSecret,
+    });
+  }
+
+  private uploadBufferToCloudinary(buffer: Buffer, publicId: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'rockon/profile-pictures',
+          public_id: publicId,
+          overwrite: true,
+          resource_type: 'image',
+        },
+        (error, result) => {
+          if (error || !result?.secure_url) {
+            reject(
+              new InternalServerErrorException(
+                error?.message || 'Cloudinary upload failed',
+              ),
+            );
+            return;
+          }
+
+          resolve(result.secure_url);
+        },
+      );
+
+      streamifier.createReadStream(buffer).pipe(uploadStream);
+    });
   }
 
   private randomRockAge(): number {
@@ -126,6 +180,54 @@ export class AuthService {
     return {
       message: 'Rock profile fetched successfully',
       rock,
+    };
+  }
+
+  async uploadProfilePicture(rockId: string, file: any) {
+    if (!file?.buffer) {
+      throw new BadRequestException('Image file is required');
+    }
+
+    const rock = await this.prisma.rock.findUnique({
+      where: { id: rockId },
+      select: {
+        id: true,
+        uniqueName: true,
+      },
+    });
+
+    if (!rock) {
+      throw new NotFoundException('Rock not found');
+    }
+
+    this.configureCloudinary();
+
+    // Compress and normalize upload payload before sending to Cloudinary.
+    const compressedImage = await sharp(file.buffer)
+      .rotate()
+      .resize({
+        width: 1024,
+        height: 1024,
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .jpeg({ quality: 72, mozjpeg: true })
+      .toBuffer();
+
+    const publicId = `${rock.uniqueName}-${Date.now()}`;
+    const uploadedUrl = await this.uploadBufferToCloudinary(compressedImage, publicId);
+
+    const updatedRock = await this.prisma.rock.update({
+      where: { id: rock.id },
+      data: {
+        profilePictureUrl: uploadedUrl,
+      },
+    });
+
+    return {
+      message: 'Profile picture uploaded successfully',
+      profilePictureUrl: updatedRock.profilePictureUrl,
+      rock: updatedRock,
     };
   }
 
