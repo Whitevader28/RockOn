@@ -51,6 +51,12 @@ export class AuthController {
     return this.authService.getRockProfile(rockId);
   }
 
+  @Get('rocks')
+  @ApiOperation({ summary: 'Get all rocks data' })
+  getAllRocks() {
+    return this.authService.getAllRocks();
+  }
+
   @Post('profile-picture')
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(FileInterceptor('file'))

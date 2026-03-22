@@ -183,6 +183,18 @@ export class AuthService {
     };
   }
 
+  async getAllRocks() {
+    const rocks = await this.prisma.rock.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return {
+      message: 'Rocks fetched successfully',
+      count: rocks.length,
+      rocks,
+    };
+  }
+
   async uploadProfilePicture(rockId: string, file: any) {
     if (!file?.buffer) {
       throw new BadRequestException('Image file is required');
