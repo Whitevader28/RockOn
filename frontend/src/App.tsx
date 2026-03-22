@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import Header from './components/header/Header'
+import LandingPage from './LandingPage'
 
-function App() {
+function Home() {
   const [message, setMessage] = useState<string>('')
 
   useEffect(() => {
@@ -18,6 +20,15 @@ function App() {
         <p>{message || 'Loading...'}</p>
       </div>
     </>
+  )
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/home" element={<Home />} />
+    </Routes>
   )
 }
 
