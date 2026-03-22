@@ -16,6 +16,13 @@ async function bootstrap() {
         .setTitle('RockOn API')
         .setDescription('Pet Rock Social Network API')
         .setVersion('1.0')
+        .addBearerAuth({
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Paste the latest access token returned by /auth/login',
+    }, 'access-token')
+        .addSecurityRequirements('access-token')
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('api', app, document);
