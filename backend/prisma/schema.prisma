@@ -7,3 +7,98 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Vibe {
+  STOIC
+  CHILL
+  STRESSED
+  HAPPY
+  SAD
+  ANGRY
+  EXCITED
+}
+
+enum Trait {
+  FUNNY
+  LOYAL
+  ADVENTUROUS
+  SMART
+  KIND
+  CREATIVE
+  SHY
+  ANNOYING
+  ANXIOUS
+}
+
+enum ActionType {
+  INNACTIVE
+  PET
+  TALK
+  SING
+  DANCE
+  PLAY
+  DEBUG
+}
+
+enum Pedigree {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id])
+
+  commenterId String
+  commenter   Rock   @relation(fields: [commenterId], references: [id])
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  comments Comment[]
+
+  imgUrl String?
+  rockId String
+  rock   Rock    @relation(fields: [rockId], references: [id])
+}
+
+model Rock {
+  id          String   @id @default(uuid())
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  isRegistered Boolean @default(false)
+  uniqueName   String  @unique @default(uuid())
+
+  profilePictureUrl String?
+  name              String
+  age               Int
+  pedigree          Pedigree
+
+  vibe   Vibe    @default(HAPPY) // Current vibe of the rock based on recent interactions
+  traits Trait[]
+
+  currentAction ActionType @default(INNACTIVE) // Current action the rock is performing
+  lastActiveAt  DateTime? // Timestamp of the last interaction to determine vibe changes
+
+  erosionLevel   Int @default(0) // Represents how much the rock has eroded over time
+  numberOfWashes Int @default(0) // Total number of times the rock has been washed
+
+  posts    Post[]
+  comments Comment[]
+
+  friends  Rock[] @relation("Friendship")
+  friendOf Rock[] @relation("Friendship")
+}

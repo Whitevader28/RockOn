@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import Header from './components/header/Header'
 import Footer from './components/footer/Footer'
+import LandingPage from './LandingPage'
 
-function App() {
+function Home() {
   const [message, setMessage] = useState<string>('')
 
   useEffect(() => {
@@ -22,6 +24,15 @@ function App() {
 
       <Footer />
     </>
+  )
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/home" element={<Home />} />
+    </Routes>
   )
 }
 
