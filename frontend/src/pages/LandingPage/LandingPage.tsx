@@ -1,9 +1,46 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Background from '../../components/LandingPage/backround';
 import './LandingPage.css';
 
 const LandingPage: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    setError('');
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ uniqueName: inputValue }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Invalid code. Please try again.');
+      }
+
+      const data = await response.json();
+
+      // Save the rock's details in localStorage or context
+      localStorage.setItem('rock', JSON.stringify(data));
+
+      // Navigate to the dashboard or metrics page
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'An error occurred. Please try again.');
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleLogin();
+    }
+  };
 
   const handleQrScan = () => {
     // Placeholder for QR scanning functionality
@@ -25,6 +62,7 @@ const LandingPage: React.FC = () => {
             placeholder="Enter code"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={handleKeyPress} // Trigger login on Enter key press
           />
         </div>
 
@@ -50,6 +88,16 @@ const LandingPage: React.FC = () => {
           </svg>
           Scan QR Code
         </button>
+
+        <button
+          id="enter-button"
+          className="qr-button" // Reuse the same styling as the QR button
+          onClick={handleLogin}
+        >
+          Enter
+        </button>
+
+        {error && <p className="error-message">{error}</p>}
       </div>
     </Background>
   );
