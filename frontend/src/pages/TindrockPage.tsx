@@ -1,75 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
+import TindrockHeader from '../components/tindrock/TindrockHeader';
+import SwipeCard, { TindrockProfile } from '../components/tindrock/SwipeCard';
 
-export interface TindrockProfile {
-  id: string;
-  name: string;
-  ageFormatted: string;
-  imageUrl: string;
-  discoveryPotential: string;
-}
+// Fake profiles to swipe through
+const mockProfiles: TindrockProfile[] = [
+  {
+    id: '1',
+    name: 'Quartz',
+    ageFormatted: '4 MILLION YEARS OLD',
+    // Using a placeholder rock image
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Quartz_Br%C3%A9sil.jpg',
+    discoveryPotential: 'Ignore each other.',
+  },
+  {
+    id: '2',
+    name: 'Obsidian',
+    ageFormatted: '2.5 MILLION YEARS OLD',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/17/Lipari-Obsidienne_%285%29.jpg',
+    discoveryPotential: 'Mutual brooding in the dark.',
+  },
+  {
+    id: '3',
+    name: 'Granite',
+    ageFormatted: '1.2 BILLION YEARS OLD',
+    imageUrl: 'https://www.nps.gov/goga/learn/education/images/granite2-copy.jpg',
+    discoveryPotential: 'A very dense conversation.',
+  }
+];
 
-interface SwipeCardProps {
-  profile: TindrockProfile;
-  onAction: (action: 'no' | 'connect') => void;
-}
+const TindrockPage: React.FC = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-const SwipeCard: React.FC<SwipeCardProps> = ({ profile, onAction }) => {
+  const handleAction = (action: 'no' | 'connect') => {
+    // You could log the action here or trigger an animation
+    // console.log(`User selected ${action} for ${mockProfiles[currentIndex].name}`);
+    
+    // Move to the next rock
+    setCurrentIndex((prev) => prev + 1);
+  };
+
+  const currentProfile = mockProfiles[currentIndex];
+
   return (
-    <div className="bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] mx-auto max-w-md w-full overflow-hidden flex flex-col">
-      
-      {/* Image & Gradient Overlay */}
-      <div className="relative w-full aspect-[4/5] bg-black">
-        <img 
-          src={profile.imageUrl} 
-          alt={profile.name} 
-          className="w-full h-full object-cover"
-        />
-        {/* Gradient for text legibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-        
-        {/* Profile Info */}
-        <div className="absolute bottom-0 left-0 p-8">
-          <h2 className="text-4xl font-extrabold text-white tracking-tight mb-2">
-            {profile.name}
-          </h2>
-          <p className="text-[10px] font-bold tracking-[0.2em] text-slate-300 uppercase">
-            {profile.ageFormatted}
-          </p>
-        </div>
-      </div>
+    <div className="max-w-6xl mx-auto font-sans text-[#0B132B]">
+      <TindrockHeader />
 
-      {/* Actions & Footer */}
-      <div className="p-8 flex flex-col items-center">
-        
-        {/* Buttons */}
-        <div className="flex justify-center space-x-6 w-full mb-8">
-          <button 
-            onClick={() => onAction('no')}
-            className="flex-1 py-4 border border-[#E06B6B] text-[#E06B6B] text-xs font-bold tracking-[0.15em] uppercase hover:bg-red-50 transition-colors"
-          >
-            No
-          </button>
-          <button 
-            onClick={() => onAction('connect')}
-            className="flex-1 py-4 bg-[#00FFC2] text-[#0B132B] text-xs font-bold tracking-[0.15em] uppercase hover:bg-[#00E5AE] transition-colors"
-          >
-            Connect
-          </button>
-        </div>
-
-        {/* Discovery Potential */}
-        <div className="text-center">
-          <p className="text-[8px] font-bold tracking-[0.2em] text-slate-400 uppercase mb-2">
-            Discovery Potential
-          </p>
-          <p className="text-sm text-slate-700 font-light">
-            Match: {profile.discoveryPotential}
-          </p>
-        </div>
-
+      <div className="flex justify-center items-center py-8">
+        {currentProfile ? (
+          <SwipeCard 
+            key={currentProfile.id} 
+            profile={currentProfile} 
+            onAction={handleAction} 
+          />
+        ) : (
+          <div className="text-center py-20">
+            <h3 className="text-2xl font-bold mb-4">No more rocks in your quarry.</h3>
+            <p className="text-slate-500 mb-8">You have judged them all.</p>
+            <button 
+              onClick={() => setCurrentIndex(0)}
+              className="px-8 py-4 bg-[#0B132B] text-white text-xs font-bold tracking-widest uppercase hover:bg-[#00C48C] transition-colors rounded-sm"
+            >
+              Reset Geological Epoch
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default SwipeCard;
+export default TindrockPage;
