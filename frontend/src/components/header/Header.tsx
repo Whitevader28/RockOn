@@ -6,6 +6,7 @@ const NAV_ITEMS = [
   { name: 'DASHBOARD', path: '/dashboard' },
   { name: 'METRICS', path: '/metrics' },
   { name: 'LOUNGE', path: '/lounge' },
+  { name: 'SEE THROUGH THE ROCK', path: '/eyes' },
   { name: 'TINDROCK', path: '/tindrock' }
 ];
 
