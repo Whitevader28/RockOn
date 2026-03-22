@@ -4,7 +4,7 @@ import { User } from 'lucide-react';
 export interface CommentProps {
   id: string;
   content: string;
-  createdAt: Date; // Replaced timeAgo with the actual DB field
+  createdAt: string;
   commenter: {
     name: string;
     profilePictureUrl?: string | null;
@@ -18,7 +18,8 @@ interface PostCommentsProps {
 }
 
 // Quick helper to format the date
-const formatTimeAgo = (date: Date) => {
+const formatTimeAgo = (dateIsoString: string) => {
+  const date = new Date(dateIsoString);
   const diffInHours = Math.floor((new Date().getTime() - date.getTime()) / (1000 * 60 * 60));
   if (diffInHours < 1) return 'JUST NOW';
   if (diffInHours < 24) return `${diffInHours}H AGO`;
@@ -28,24 +29,82 @@ const formatTimeAgo = (date: Date) => {
 const PostComments: React.FC<PostCommentsProps> = ({ postId, initialComments, onCommentAdded }) => {
   const [comments, setComments] = useState<CommentProps[]>(initialComments);
   const [newComment, setNewComment] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleAddComment = (e: React.FormEvent) => {
+  const getAccessToken = (): string | null => {
+    const rockRaw = localStorage.getItem('rock');
+    if (!rockRaw) {
+      return null;
+    }
+
+    try {
+      const rockData = JSON.parse(rockRaw) as { accessToken?: string };
+      return rockData.accessToken ?? null;
+    } catch {
+      return null;
+    }
+  };
+
+  const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim()) return;
+    if (!newComment.trim() || isSubmitting) return;
 
-    const newlyAddedComment: CommentProps = {
-      id: Math.random().toString(),
-      content: newComment,
-      createdAt: new Date(), // Stamping it with right now
-      commenter: {
-        name: 'You (Your Rock)', 
-        profilePictureUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoEZJVc2wUKe593ai474hSN3SeDoZnvBUEOA&s",
-      },
-    };
+    setError(null);
+    setIsSubmitting(true);
 
-    setComments([...comments, newlyAddedComment]);
-    setNewComment('');
-    onCommentAdded(); 
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+      setError('Login required to add comments.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts/${postId}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ content: newComment.trim() }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to post comment.');
+      }
+
+      const data: {
+        comment: {
+          id: string;
+          content: string;
+          createdAt: string;
+          commenter: {
+            name: string;
+            profilePictureUrl?: string | null;
+          };
+        };
+      } = await response.json();
+
+      const newlyAddedComment: CommentProps = {
+        id: data.comment.id,
+        content: data.comment.content,
+        createdAt: data.comment.createdAt,
+        commenter: {
+          name: data.comment.commenter.name,
+          profilePictureUrl: data.comment.commenter.profilePictureUrl ?? null,
+        },
+      };
+
+      setComments((prev) => [...prev, newlyAddedComment]);
+      setNewComment('');
+      onCommentAdded();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to post comment.';
+      setError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -84,12 +143,14 @@ const PostComments: React.FC<PostCommentsProps> = ({ postId, initialComments, on
         />
         <button
           type="submit"
-          disabled={!newComment.trim()}
+          disabled={!newComment.trim() || isSubmitting}
           className="bg-[#0B132B] text-white px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest hover:bg-[#00C48C] transition-colors disabled:opacity-50 disabled:hover:bg-[#0B132B]"
         >
-          Post
+          {isSubmitting ? 'Posting...' : 'Post'}
         </button>
       </form>
+
+      {error && <p className="text-xs text-red-600 mt-3">{error}</p>}
     </div>
   );
 };
