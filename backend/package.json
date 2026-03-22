@@ -27,5 +27,8 @@
     "@nestjs/schematics": "^11.0.0",
     "prisma": "^6.19.0",
     "typescript": "^5.7.0"
+  },
+  "prisma": {
+    "seed": "npx ts-node prisma/seed.ts"
   }
 }

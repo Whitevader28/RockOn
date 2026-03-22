@@ -7,6 +7,7 @@ import DashboardPage from './pages/DashboardPage';
 import LoungePage from './pages/LoungePage';
 import SeeThroughEyes from './components/eyes/Eyes';
 import Metrics from './components/metrics/Metrics';
+import TindrockPage from './pages/TindrockPage';
 
 // 1. Create a Layout component to wrap pages that NEED a header and footer
 const MainLayout = () => {
