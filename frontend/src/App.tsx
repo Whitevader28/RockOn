@@ -5,6 +5,7 @@ import Footer from './components/footer/Footer';
 import LandingPage from './pages/LandingPage/LandingPage';
 import DashboardPage from './pages/DashboardPage';
 import LoungePage from './pages/LoungePage';
+import SeeThroughEyes from './components/eyes/Eyes';
 import Metrics from './components/metrics/Metrics';
 import TindrockPage from './pages/TindrockPage';
 
@@ -32,8 +33,6 @@ const App: React.FC = () => {
         <Route index element={<Navigate to="/landing" replace />} />
         <Route path="/landing" element={<LandingPage />} />
         
-        {/* Catch-all route to bounce invalid URLs to landing */}
-        <Route path="*" element={<Navigate to="/landing" replace />} />
 
 
         {/* ========================================== */}
@@ -43,8 +42,12 @@ const App: React.FC = () => {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/metrics" element={<Metrics />} />
           <Route path="/lounge" element={<LoungePage />} />
-          <Route path="/tindrock" element={<TindrockPage />} />
+          <Route path="/eyes" element={<SeeThroughEyes />} />
+          <Route path="/tindrock" element={<div className="text-center mt-20 text-2xl font-bold text-[#0B132B]">Tindrock Coming Soon</div>} />
         </Route>
+
+        {/* Catch-all route at the very end to bounce invalid URLs to landing */}
+        <Route path="*" element={<Navigate to="/landing" replace />} />
 
       </Routes>
     </div>
