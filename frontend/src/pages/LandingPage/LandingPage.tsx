@@ -27,7 +27,8 @@ const LandingPage: React.FC = () => {
       const data = await response.json();
 
       // Save the rock's details in localStorage or context
-      localStorage.setItem('rock', JSON.stringify(data));
+      localStorage.setItem('rockId', JSON.stringify(data.rock.uniqueName));
+      localStorage.setItem('accessToken', JSON.stringify(data.rock.accessToken));
 
       // Navigate to the dashboard or metrics page
       navigate('/dashboard');
