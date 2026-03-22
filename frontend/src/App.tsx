@@ -1,35 +1,49 @@
-import { useEffect, useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
-import Header from './components/header/Header'
-import LandingPage from './pages/LandingPage/LandingPage'
+import React from 'react';
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import Header from './components/header/Header';
+import Footer from './components/footer/Footer';
+import LandingPage from './pages/LandingPage/LandingPage';
 
-function Home() {
-  const [message, setMessage] = useState<string>('')
-
-  useEffect(() => {
-    fetch(import.meta.env.VITE_BACKEND_URL + '/hello')
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-  }, [])
-
+// 1. Create a Layout component to wrap pages that NEED a header and footer
+const MainLayout = () => {
   return (
     <>
       <Header />
-      <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-        <h1>RockOn</h1>
-        <p>{message || 'Loading...'}</p>
-      </div>
+      <main className="flex-grow p-8 md:p-12 lg:p-16">
+        <Outlet /> {/* This is where /metrics, /lounge, etc. will render */}
+      </main>
+      <Footer />
     </>
-  )
-}
+  );
+};
 
-function App() {
+const App: React.FC = () => {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/home" element={<Home />} />
-    </Routes>
-  )
-}
+    // Keep the main wrapper here so the background color applies to all pages
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+      <Routes>
+        {/* ========================================== */}
+        {/* Routes WITHOUT Header & Footer             */}
+        {/* ========================================== */}
+        <Route index element={<Navigate to="/landing" replace />} />
+        <Route path="/landing" element={<LandingPage />} />
+        
+        {/* Catch-all route to bounce invalid URLs to landing */}
+        <Route path="*" element={<Navigate to="/landing" replace />} />
 
-export default App
+
+        {/* ========================================== */}
+        {/* Routes WITH Header & Footer wrapped inside */}
+        {/* ========================================== */}
+        <Route element={<MainLayout />}>
+          <Route path="/metrics" element={<div className="text-center mt-20">Metrics Page Coming Soon</div>} />
+          <Route path="/lounge" element={<div className="text-center mt-20">Lounge Coming Soon</div>} />
+          <Route path="/tindrock" element={<div className="text-center mt-20">Tindrock Coming Soon</div>} />
+        </Route>
+
+      </Routes>
+    </div>
+  );
+};
+
+export default App;
