@@ -5,6 +5,7 @@ import Footer from './components/footer/Footer';
 import LandingPage from './pages/LandingPage/LandingPage';
 import DashboardPage from './pages/DashboardPage';
 import LoungePage from './pages/LoungePage';
+import Metrics from './components/metrics/Metrics';
 
 // 1. Create a Layout component to wrap pages that NEED a header and footer
 const MainLayout = () => {
@@ -39,7 +40,7 @@ const App: React.FC = () => {
         {/* ========================================== */}
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/metrics" element={<div className="text-center mt-20">Metrics Page Coming Soon</div>} />
+          <Route path="/metrics" element={<Metrics />} />
           <Route path="/lounge" element={<LoungePage />} />
           <Route path="/tindrock" element={<div className="text-center mt-20">Tindrock Coming Soon</div>} />
         </Route>
