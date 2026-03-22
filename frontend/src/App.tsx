@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Header from './components/header/Header'
 
 function App() {
   const [message, setMessage] = useState<string>('')
@@ -10,10 +11,13 @@ function App() {
   }, [])
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>RockOn</h1>
-      <p>{message || 'Loading...'}</p>
-    </div>
+    <>
+      <Header />
+      <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+        <h1>RockOn</h1>
+        <p>{message || 'Loading...'}</p>
+      </div>
+    </>
   )
 }
 
