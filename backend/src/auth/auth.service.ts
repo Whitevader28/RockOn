@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Pedigree, Trait, Vibe } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { CreateAuthDto } from './dto/create-auth.dto';
+import { ValidateTokenDto } from './dto/validate-token.dto';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()
@@ -62,6 +63,8 @@ export class AuthService {
       throw new NotFoundException('Rock not found');
     }
 
+    const newAccessToken = randomUUID();
+
     const updatedRock = await this.prisma.rock.update({
       where: { uniqueName: createAuthDto.uniqueName },
       data: {
@@ -71,13 +74,43 @@ export class AuthService {
           : rock.description ?? 'Newly registered rock.',
         age: rock.isRegistered ? rock.age : rock.age > 0 ? rock.age : this.randomRockAge(),
         lastActiveAt: new Date(),
+        accessToken: newAccessToken,
       },
     });
 
     return {
       message: 'Rock logged in successfully',
       firstRegistrationCompleted: !rock.isRegistered,
+      accessToken: newAccessToken,
       rock: updatedRock,
+    };
+  }
+
+  async validateToken(validateTokenDto: ValidateTokenDto) {
+    const rock = await this.prisma.rock.findUnique({
+      where: { uniqueName: validateTokenDto.uniqueName },
+      select: {
+        id: true,
+        uniqueName: true,
+        accessToken: true,
+        isRegistered: true,
+      },
+    });
+
+    if (!rock) {
+      throw new NotFoundException('Rock not found');
+    }
+
+    if (!rock.accessToken || rock.accessToken !== validateTokenDto.accessToken) {
+      throw new UnauthorizedException(
+        'Token expired or invalid. Re-enter UUID to login again.',
+      );
+    }
+
+    return {
+      valid: true,
+      message: 'Token is valid',
+      rock,
     };
   }
 
