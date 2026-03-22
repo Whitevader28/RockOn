@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -25,6 +25,12 @@ export class AuthController {
   @ApiOperation({ summary: 'Validate that a token is the latest one for this rock' })
   validateToken(@Body() validateTokenDto: ValidateTokenDto) {
     return this.authService.validateToken(validateTokenDto);
+  }
+
+  @Get('profile/:rockId')
+  @ApiOperation({ summary: 'Get profile information for a rock by id' })
+  getRockProfile(@Param('rockId') rockId: string) {
+    return this.authService.getRockProfile(rockId);
   }
 
   @Get()

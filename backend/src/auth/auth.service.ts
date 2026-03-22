@@ -114,6 +114,21 @@ export class AuthService {
     };
   }
 
+  async getRockProfile(rockId: string) {
+    const rock = await this.prisma.rock.findUnique({
+      where: { uniqueName: rockId },
+    });
+
+    if (!rock) {
+      throw new NotFoundException('Rock not found');
+    }
+
+    return {
+      message: 'Rock profile fetched successfully',
+      rock,
+    };
+  }
+
   profileInfo() {
     return { message: 'This is the profile information.' };
   }
