@@ -22,7 +22,9 @@
   .square-to-octagon {
     --s: 80px;
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
     --_g: #0000, var(--c1) 2deg calc(var(--a) - 2deg),#0000 var(--a);
     background: 
       conic-gradient(from calc(-45deg  - var(--a)/2) at top    var(--p) left  var(--p),var(--_g)),
@@ -70,9 +72,12 @@
   }
   .square-to-octagon .center {
     display: flex;
-    position: absolute;
+    position: relative;
+    z-index: 1;
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
+    padding: 24px 16px;
+    box-sizing: border-box;
     justify-content: center;
     align-items: center;
 }

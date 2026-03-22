@@ -13,36 +13,27 @@ const LandingPage: React.FC = () => {
   return (
     <Background>
       <div className="landing-card">
-        {/* Image Placeholder */}
         <div className="image-placeholder">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="3" width="18" height="18" rx="3" />
-            <circle cx="8.5" cy="8.5" r="1.5" />
-            <path d="M21 15l-5-5L5 21" />
-          </svg>
-          <span>Add Image</span>
+          <img src="/CoolRock.png" alt="Cool Rock" />
         </div>
 
-        {/* Text Input */}
         <div className="text-input-wrapper">
           <input
             id="landing-text-input"
             className="text-input"
             type="text"
-            placeholder="Enter code or link..."
+            placeholder="Enter code"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
           />
         </div>
 
-        {/* OR Divider */}
         <div className="or-divider">
           <div className="line" />
           <span className="or-text">OR</span>
           <div className="line" />
         </div>
 
-        {/* QR Code Scanner Button */}
         <button
           id="qr-scan-button"
           className="qr-button"
