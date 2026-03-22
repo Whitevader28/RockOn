@@ -1,4 +1,5 @@
-import './backround.css';
+import React from 'react';
+import '../backround.css';
 
 interface BackgroundProps {
   children?: React.ReactNode;

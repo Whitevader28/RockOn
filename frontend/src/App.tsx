@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Header from './components/header/Header'
 import LandingPage from './LandingPage'
+import ChatPage from './ChatPage'
 
 function Home() {
   const [message, setMessage] = useState<string>('')
@@ -28,6 +29,7 @@ function App() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/home" element={<Home />} />
+      <Route path="/chat" element={<ChatPage />} />
     </Routes>
   )
 }
