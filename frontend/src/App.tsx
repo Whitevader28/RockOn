@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Header from './components/header/Header'
-import LandingPage from './LandingPage'
+import LandingPage from './pages/LandingPage/LandingPage'
 
 function Home() {
   const [message, setMessage] = useState<string>('')
